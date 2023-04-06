@@ -82,7 +82,6 @@ def the_chord_method(a, b, e):
     return 0
 
 
-
 result = the_midpoint_method(a, b, eps)
 print(f"The midpoint method: {result[0]}; count of iteractions = {result[1]}")
 
