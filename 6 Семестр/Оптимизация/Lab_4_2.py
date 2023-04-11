@@ -1,5 +1,4 @@
 from math import sqrt
-import time
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -7,7 +6,7 @@ from mpl_toolkits.mplot3d import Axes3D
 x1_list = []
 x2_list = []
 y_list = []
-counter_3 = 0
+counter = 0
 
 def show(x1_list, x2_list):
     N = int(x1_list.__len__())
@@ -16,8 +15,8 @@ def show(x1_list, x2_list):
 
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
-    x1_array = np.arange(min(x1_list) - 1, max(x1_list) + 1, 0.01)
-    x2_array = np.arange(min(x2_list) - 1, max(x2_list) + 1, 0.01)
+    x1_array = np.arange(min(x1_list) - 1, max(x1_list) + 1, 0.1)
+    x2_array = np.arange(min(x2_list) - 1, max(x2_list) + 1, 0.1)
     #x1_array = np.arange(-6, 3, 0.1)
     #x2_array = np.arange(-6, 6, 0.1)
 
@@ -61,51 +60,27 @@ def show(x1_list, x2_list):
 
     plt.show()
 
-
-
 def f(x1, x2):
-    return 3 * x1**4 - x1*x2 + x2**4 - 7*x1 - 8*x2 + 2
-
+    return 3*x1**4 - x1*x2 + x2**4 - 7*x1 - 8*x2 + 2
 def f_x1(x1, x2):
     return 12*x1**3 - x2 - 7
-
 def f_x2(x1, x2):
-    return 4*x2**3 - x1 - 8
-
-def f_x1_x1(x1, x2):
-    return 36*x1**2
-
-def f_x2_x2(x1, x2):
-    return 12*x2**2
-
-def f_x1_x2(x1, x2):
-    return -1
-
-def f_x2_x1(x1, x2):
-    return -1
+    return 4*x2**3 - x1  - 8
 
 def gradient(x1, x2):
     i = f_x1(x1, x2)
     j = f_x2(x1, x2)
     return [i, j]
 
+
 def module_of_gradient(grad):
     i = 0; j = 1
     return sqrt(grad[i]**2 + grad[j]**2)
 
-def inverse_gesse_matrix(x1, x2):
-    maxtix = [[f_x1_x1(x1, x2), f_x1_x2(x1, x2)], [f_x2_x1(x1, x2), f_x2_x2(x1, x2)]]
-    A = maxtix[0][0] * maxtix[1][1] - maxtix[1][0] * maxtix[0][1]
-    if A == 0:
-        return None
-    A = abs(A)
-    inverse_maxtix = [[maxtix[1][1] / A, maxtix[1][0] / A], [maxtix[0][1] / A, maxtix[0][0] / A]]
-    return inverse_maxtix
-
 def dichotomy_mehod(a, b, epsilon, x1, x2, d1, d2):
     x = (a + b) / 2
-    global counter_3
-    counter_3 += 2
+    global counter
+    counter += 2
     
     if (f(x1 + (x - epsilon)* d1, x2 + (x - epsilon)* d2) < f(x1 + (x + epsilon)* d1, x2 + (x + epsilon)* d2)):
         b = x
@@ -116,53 +91,59 @@ def dichotomy_mehod(a, b, epsilon, x1, x2, d1, d2):
         return dichotomy_mehod(a, b, epsilon, x1, x2, d1, d2)
     return x
 
-def is_matrix_positive(a, b, c, d):
-    return ((a > 0) and (a*d-b*c > 0))
+def count_matrix(H, dx, dy):
+    dx = np.array(dx)
+    H = np.array(H)
 
-def newtons_method_with_step_adjustment(x1, x2, e, M):
-    global counter_3
+    a = dx-H*dy
+    aT = np.transpose(a)
+
+    numerator = a.dot(aT)
+    denominator = aT*dy
+    H_next = H + numerator * np.linalg.inv(denominator)
+    return H_next
+
+
+def symemetrical_rank_1_formula(x1, x2, e, M):
+    global counter
     k = 0
+    H = [[1, 0], [0, 1]]
     while True:
-        counter_3 += 2
+        counter += 2
         grad = gradient(x1, x2)
         module_grad = module_of_gradient(grad)
+        
+        d = [-1 * H[0][0] * grad[0] + -1 * H[0][1] * grad[1], -1 * H[1][0] * grad[0] + -1 * H[1][1] * grad[1]]
+
+        t = dichotomy_mehod(0, 0.1, e, x1, x2, d[0], d[1])
+
+        x1_next = x1 - t * d[0]
+        x2_next = x2 - t * d[1]
+
         if ((module_grad < e) | (k >= M)):
             return [(round(x1, round_num), round(x2, round_num), round(f(x1, x2), round_num)), k]
 
-        inverse_maxtix = inverse_gesse_matrix(x1, x2)
-        d = []
+        dx1 = t * d[0]; dx2 = t * d[1]
+        dx = [dx1, dx2]
+        dy = f(x1_next, x2_next) - f(x1, x2)
+        H = count_matrix(H, dx, dy)
 
-        counter_3 += 4
-        if (is_matrix_positive(inverse_maxtix[0][0], inverse_maxtix[0][1], inverse_maxtix[1][0], inverse_maxtix[1][1])):
-            d = [-1 * inverse_maxtix[0][0] * grad[0] + -1 * inverse_maxtix[0][1] * grad[1], -1 * inverse_maxtix[1][0] * grad[0] + -1 * inverse_maxtix[1][1] * grad[1]]
-        else:
-            d = [-1 * grad[0], -1 * grad[1]]
-
-        t = dichotomy_mehod(0, 1, e, x1, x2, d[0], d[1])
         x1_list.append(x1); x2_list.append(x2)
 
-        x1_next = x1 + t * d[0]
-        x2_next = x2 + t * d[1]
-        
-        counter_3 += 2
-        #print(grad, 'x1 =', x1_next, 'x2 =', x1_next,'f(x1, x2) =', f(x1_next, x2_next), 't_1 =', t_1, 't_2 =', t_2)
-        if ((sqrt(abs(x1_next - x1)**2 + abs(x2_next - x2)**2) <= e)
-            & (abs(f(x1_next, x2_next) - f(x1, x2)) <= e)):
-            return [(round(x1_next, round_num), round(x2_next, round_num), round(f(x1_next, x2_next), round_num)), k]
-
-        x1 = x1_next
-        x2 = x2_next
+        x1 = x1_next; x2 = x2_next
         k += 1
 
-x1 = -30
-x2 = 100
-e = 0.001
+
 round_num = 3
+x1 = 1
+x2 = 1
+e = 0.001
 M = 100
 
-result = newtons_method_with_step_adjustment(x1, x2, e, M)
+result = symemetrical_rank_1_formula(x1, x2, e, M)
 print(f"Newton's method with step adjustment: {result[0]}; count of iteractions = {result[1]}")
-print('Count of compute function =', counter_3)
+print('Count of compute function =', counter)
 
 
 show(x1_list, x2_list)
+     
