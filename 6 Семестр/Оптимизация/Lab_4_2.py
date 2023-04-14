@@ -94,10 +94,17 @@ def dichotomy_mehod(a, b, epsilon, x1, x2, d1, d2):
 def count_matrix(H, dx, dy):
     dx = np.array(dx)
     H = np.array(H)
-
+    
+    print("-----------------------------------------------------")
+    print(H)
+    print(dx)
+    print(dy)
+    
     a = dx-H*dy
+    print(a)
     aT = np.transpose(a)
-
+    print(aT)
+    input()
     numerator = a.dot(aT)
     denominator = aT*dy
     H_next = H + numerator * np.linalg.inv(denominator)
@@ -127,7 +134,7 @@ def symemetrical_rank_1_formula(x1, x2, e, M):
         dx = [dx1, dx2]
         dy = f(x1_next, x2_next) - f(x1, x2)
         H = count_matrix(H, dx, dy)
-
+        print("x1 = ", x1_next, "x2 = ", x2_next, "\n", H)
         x1_list.append(x1); x2_list.append(x2)
 
         x1 = x1_next; x2 = x2_next
