@@ -153,9 +153,9 @@ def newtons_method_with_step_adjustment(x1, x2, e, M):
         x1 = x1_next
         x2 = x2_next
         k += 1
-
-x1 = -30
-x2 = 100
+        
+x1 = -5
+x2 = 3
 e = 0.001
 round_num = 3
 M = 100
@@ -165,4 +165,4 @@ print(f"Newton's method with step adjustment: {result[0]}; count of iteractions 
 print('Count of compute function =', counter_3)
 
 
-show(x1_list, x2_list)
+#show(x1_list, x2_list)

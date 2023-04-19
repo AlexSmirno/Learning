@@ -23,7 +23,6 @@ def show(x1_list, x2_list):
     x1_array, x2_array = np.meshgrid(x1_array, x2_array)
     R = f(x1_array, x2_array)
 
-    fig = plt.figure()
     ax = Axes3D(fig)
 
 
@@ -49,9 +48,6 @@ def show(x1_list, x2_list):
         x2_list2.append(x2_list[n])
         f_list.append(f(x1_list[n], x2_list[n]))
         #print(x1_list[n], x2_list[n], f(x1_list[n], x2_list[n]))
-        
-        fig.canvas.draw()
-        #fig.canvas.flush_events()
 
     ax.scatter(x1_list[N - 1], x2_list[N - 1], f(x1_list[N - 1], x2_list[N - 1]), c='green')
     #print(x1_list[N - 1], x2_list[N - 1], f(x1_list[N - 1], x2_list[N - 1]))
@@ -65,7 +61,7 @@ def f(x1, x2):
 def f_x1(x1, x2):
     return 12*x1**3 - x2 - 7
 def f_x2(x1, x2):
-    return 4*x2**3 - x1  - 8
+    return 4*x2**3 - x1 - 8
 
 def gradient(x1, x2):
     i = f_x1(x1, x2)
@@ -82,11 +78,11 @@ def dichotomy_mehod(a, b, epsilon, x1, x2, d1, d2):
     global counter
     counter += 2
     
-    if (f(x1 + (x - epsilon)* d1, x2 + (x - epsilon)* d2) < f(x1 + (x + epsilon)* d1, x2 + (x + epsilon)* d2)):
+    if (f(x1 + (x - epsilon)*d1, x2 + (x - epsilon)*d2) < f(x1 + (x + epsilon)*d1, x2 + (x + epsilon)*d2)):
         b = x
     else:
         a = x
-            
+
     if(abs(b - a) >= 2 * epsilon):
         return dichotomy_mehod(a, b, epsilon, x1, x2, d1, d2)
     return x
@@ -109,11 +105,11 @@ def the_fletcher_reevse_method(x1, x2, e1, e2, M):
         if k % 2 == 1: B = module_of_gradient(grad)**2 / module_of_gradient(grad_prev)**2
 
         d = [-grad[0] + B * d_prev[0], -grad[1] + B * d_prev[1]] 
-        t = dichotomy_mehod(0, 0.1, e2, x1, x2, d[0], d[1])
+        t = dichotomy_mehod(0, 0.1, e1, x1, x2, d[0], d[1])
 
-        x1_next = x1 - t * grad[0]
-        x2_next = x2 - t * grad[1]
-
+        x1_next = x1 + t * d[0]
+        x2_next = x2 + t * d[1]
+    
         x1_list.append(x1); x2_list.append(x2)
     
         counter += 1
@@ -130,15 +126,15 @@ def the_fletcher_reevse_method(x1, x2, e1, e2, M):
 
 
 round_num = 3
-x1 = 10
-x2 = 10
+x1 = -5
+x2 = 3
 e1 = 0.001
 e2 = 0.001
 M = 100
 
 result = the_fletcher_reevse_method(x1, x2, e1, e2, M)
-print(f"Newton's method with step adjustment: {result[0]}; count of iteractions = {result[1]}")
+print(f"The Fletcher Reevse method: {result[0]}; count of iteractions = {result[1]}")
 print('Count of compute function =', counter)
 
 
-show(x1_list, x2_list)
+#show(x1_list, x2_list)
