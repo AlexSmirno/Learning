@@ -9,6 +9,20 @@ x2_list = []
 y_list = []
 counter = 0
 
+def drawFunc(minX, minY, maxX, maxY):
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+    x1_array = np.arange(minX, maxX, 0.1)
+    x2_array = np.arange(minY, maxY, 0.1)
+    x1_array, x2_array = np.meshgrid(x1_array, x2_array)
+    R = f(x1_array, x2_array)
+
+    ax.set_xlabel('x1')
+    ax.set_ylabel('x2')
+    ax.set_zlabel('f(x1,x2)')   
+    ax.plot_surface(x1_array, x2_array, R, color='b', alpha=0.5) 
+    plt.show()
+
 def show(x1_list, x2_list):
     N = int(x1_list.__len__())
     if (N <= 0):
@@ -16,8 +30,8 @@ def show(x1_list, x2_list):
 
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
-    x1_array = np.arange(min(x1_list) - 1, max(x1_list) + 1, 0.1)
-    x2_array = np.arange(min(x2_list) - 1, max(x2_list) + 1, 0.1)
+    x1_array = np.arange(min(x1_list) - 0.1, max(x1_list) + 0.1, 0.1)
+    x2_array = np.arange(min(x2_list) - 0.1, max(x2_list) + 0.1, 0.1)
 
     x1_array, x2_array = np.meshgrid(x1_array, x2_array)
     R = f(x1_array, x2_array)
@@ -53,11 +67,10 @@ def show(x1_list, x2_list):
     plt.show()
 
 def f(x1, x2):
-    global counter; counter += 1
     return 3*x1**4 - x1*x2 + x2**4 - 7*x1 - 8*x2 + 2
 
 def find_s(x1, x2, a, h):
-    global counter; counter += 2
+    global counter; counter += 1
     return (f(x1 + a*h[0], x2 + a*h[1]) - f(x1, x2)) / a
 
 def rand(n):
@@ -89,14 +102,18 @@ def random_gradient_decent(x1, x2, e, a):
         k += 1
 
 
-round_num = 3
-x1 = 1
-x2 = 1
-e = 0.0001
+round_num = 4
+x1 = 0
+x2 = 0
+e = 0.00001
 a = 0.01
 
 result = random_gradient_decent(x1, x2, e, a)
 print(f"Random gradient decent: {result[0]}; count of iteractions = {result[1]}")
-print('Count of compute function =', counter)
+print('Count of compute function =', counter + 1)
+
+
+#show(x1_list, x2_list)
+#drawFunc(-10, -10, 10, 10)
 
 
