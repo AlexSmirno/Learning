@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 import sklearn
 import numpy as np
 import pandas as pd
+from tkinter import filedialog
 
 engine = create_engine('postgresql+psycopg2://postgres:admin@localhost/real_time_system')
 
@@ -79,24 +80,29 @@ class Ui_Dialog(object):
         self.fe_v_lable.setText(_translate("Dialog", "FeV"))
 
     def add_function(self):
-        self.predict_button.clicked.connect(lambda: self.write_number(self.heart_number_input.text()))
+        self.predict_button.clicked.connect(lambda: self.write_numbers(self.heart_number_input.text()))
+        #self.predict_button.clicked.connect(lambda: self.file_dialog())
 
-    def write_number(self, number):
+    def write_numbers(self, number):
         data = self.get_dataset(number)
-        if data is None:
+
+        data_1 = self.file_dialog()[0]
+        if data_1 is None:
             return
-        
+
         #data_cr = list(data.iloc[0][model_cr.feature_names_in_])
         #data_mo = list(data.iloc[0][model_mo.feature_names_in_])
         #data_v = list(data.iloc[0][model_v.feature_names_in_])
         
-        data_cr = list(data.iloc[0][model_cr.feature_name_])
-        data_mo = list(data.iloc[0][model_mo.feature_name_])
-        data_v = list(data.iloc[0][model_v.feature_name_])
+        #data_cr = list(data.iloc[0][model_cr.feature_name_])
+        #data_mo = list(data.iloc[0][model_mo.feature_name_])
+        #data_v = list(data.iloc[0][model_v.feature_name_])
+        #print(data_cr)
+        
 
-        res_cr = str(np.round((model_cr.predict([data_cr]))[0], 3))
-        res_mo = str(np.round((model_mo.predict([data_mo]))[0], 3))
-        res_v = str(np.round((model_v.predict([data_v]))[0], 3))
+        res_cr = str(np.round((model_cr.predict([data_1]))[0], 3))
+        res_mo = str(np.round((model_mo.predict([data_1]))[0], 3))
+        res_v = str(np.round((model_v.predict([data_1]))[0], 3))
 
         self.fe_cr_lable_num.setText(res_cr)
         self.fe_mo_lable_num.setText(res_mo)
@@ -121,6 +127,17 @@ class Ui_Dialog(object):
              return None
         return data.fillna(0)
 
+    def file_dialog(self):
+        #fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "/home/jana", tr("Image Files (*.png *.jpg *.bmp)"));
+        #filename = filedialog.Open()
+
+        try:
+            name = filedialog.askopenfilename()
+            features = pd.read_csv(name)
+            features = np.array(features).transpose()
+            return features
+        except:
+            return None
 
 if __name__ == "__main__":
     import sys
