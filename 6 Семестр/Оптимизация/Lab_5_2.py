@@ -70,11 +70,8 @@ def dist(x1, x2):
     return sqrt((x1[0] - x2[0])**2 + (x1[1] - x2[1])**2)
 
 def max_f(f):
-    #print("max_f(", f, ")")
     f_max = max(f)
-    #print("f_max =", f_max)
     index = f.index(f_max)
-    #print("index =", index)
     return index
 
 def calc_x_next(x, index, n):
@@ -96,27 +93,22 @@ def simplexnyi_method(x0, x1, x2, a, n):
     counter += 3
     while (dist(x[0], x[1]) > e or dist(x[1], x[2]) > e or dist(x[2], x[0]) > e):
         f_list = []
-        
-        #x_c = calc_centr(x)
-        #x1_list.append(x_c[0]); x2_list.append(x_c[1])
         x1_list.append(x[0][0]); x2_list.append(x[0][1])
         x1_list.append(x[1][0]); x2_list.append(x[1][1])
         x1_list.append(x[2][0]); x2_list.append(x[2][1])
 
         counter += 1
-        f_list.append(f(x[0][0], x[0][1])) #;print("f0 = ", f(x[0][0], x[0][1]))
-        f_list.append(f(x[1][0], x[1][1])) #;print("f1 = ", f(x[1][0], x[1][1]))
-        f_list.append(f(x[2][0], x[2][1])) #;print("f2 = ", f(x[2][0], x[2][1]))
-
-        #print("x0 =", x[0], "x1 =", x[1], "x2 =", x[2])
+        f_list.append(f(x[0][0], x[0][1]))
+        f_list.append(f(x[1][0], x[1][1]))
+        f_list.append(f(x[2][0], x[2][1]))
 
         while(True):
             f_values = f_list
-            i = max_f(f_values) #;print("i = ", i)
-            xn = calc_x_next(x, i, n) #;print("xn = ", xn)
-            fn = f(xn[0], xn[1]); counter += 1 #;print("fn = ", fn)
+            i = max_f(f_values)
+            xn = calc_x_next(x, i, n)
+            fn = f(xn[0], xn[1]); counter += 1
 
-            if (f_values[i] > fn): x[i] = xn ; break #print("break");
+            if (f_values[i] > fn): x[i] = xn ; break
 
             f_values[i] = min_val
 
@@ -127,10 +119,7 @@ def simplexnyi_method(x0, x1, x2, a, n):
                 x[2] = np.array([x[0][0] + calc_s(a, n), x[0][1] + calc_r(a, n)])
                 break
 
-            #print("x0 =", x[0], "x1 =", x[1], "x2 =", x[2])
         k += 1
-        #print("---------------------------------")
-    #print("x0 =", x[0], "x1 =", x[1], "x2 =", x[2])
     point = calc_centr(x)
     return [(point, f(point[0], point[1])), k]
 

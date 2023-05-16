@@ -88,8 +88,6 @@ def random_gradient_decent(x1, x2, e, a):
         x1_next = x1 - a*sk*ej[0]
         x2_next = x2 - a*sk*ej[1]
 
-        #print("x1 = ", x1, "x2 = ", x2, "sk = ", sk, "f = ", f(x1,x2))
-        #print(ej)
         x1_list.append(x1); x2_list.append(x2)
 
         if (sqrt(abs(x1_next - x1)**2 + abs(x2_next - x2)**2) <= e):

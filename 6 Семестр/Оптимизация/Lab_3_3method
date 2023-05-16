@@ -153,7 +153,8 @@ def newtons_method_with_step_adjustment(x1, x2, e, M):
         x1 = x1_next
         x2 = x2_next
         k += 1
-        
+
+
 x1 = 100
 x2 = 100
 e = 0.001
