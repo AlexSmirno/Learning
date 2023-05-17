@@ -9,7 +9,7 @@ x2_list = []
 y_list = []
 counter = 0
 
-def drawFunc(minX, minY, maxX, maxY, ax):
+def drawFunc(minX, minY, maxX, maxY, ax = None):
     #fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
     #ax.set_xlabel('x1')
     #ax.set_ylabel('x2')
@@ -31,7 +31,7 @@ def drawFunc(minX, minY, maxX, maxY, ax):
     #drawBoder(ax, x1_array, g4_1)
 
     #print(R)
-    ax.plot_surface(x1_array, x2_array, R, alpha = 0.5)
+    ax.plot_surface(x1_array, x2_array, R, alpha = 0.6)
     #plt.show()
 
 def fill_arrays(x, y):
@@ -66,8 +66,8 @@ def fill_z(x, y):
             if (x[i][j] != 0 and y[j][i] != 0):
                 z[i].append(f(x[i][j], y[j][i]))
             else: z[i].append(0.0)
-            print("i =", i, "j =", j)
-            print("x =", x[i][j], "y =", y[j][i], "z =", z[i][j])
+            #print("i =", i, "j =", j)
+            #print("x =", x[i][j], "y =", y[j][i], "z =", z[i][j])
     
     #for i in range(len(z)):
     #    print(i,")", z[i])
@@ -84,7 +84,7 @@ def fill_F2(x, y):
             if (barier(x[i][j], y[i][j])):
                 z[i].append(f(x[i][j], y[i][j]))
             else: z[i].append(0.0)
-            
+
     r = np.array(z)
     #for i in range(len(z)):
     #    r.__add__(np.array[z[i]])
@@ -193,6 +193,10 @@ def g3_bool(x1, x2):
 
 def g4_bool(x1, x2):
     return 2*x1 - 3*x2 - 4 <= 0
+
+def barier(x1, x2):
+    return (g1_bool(x1, x2) and g2_bool(x1, x2) and g3_bool(x1, x2) and g4_bool(x1, x2))
+
 # -------------->
 
 # <---------- X
@@ -221,9 +225,6 @@ def P_x2(x1, x2, r):
     return -r*sum
 
 # ------------>
-
-def barier(x1, x2):
-    return (g1_bool(x1, x2) and g2_bool(x1, x2) and g3_bool(x1, x2) and g4_bool(x1, x2))
 
 def gradient(x1, x2, r):
     i = F_x1(x1, x2, r)
@@ -287,10 +288,10 @@ def barrier_function_method(x1, x2, r, C, e, M, k):
     return barrier_function_method(min_x1, min_x2, r, C, e, M, k)
 
 
-round_num = 3
-x1 = 2
-x2 = 2
-e = 0.001
+round_num = 4
+x1 = 2.5
+x2 = 1
+e = 0.0001
 M = 100
 r = 1
 c = 10
@@ -299,7 +300,6 @@ k = 0
 result = barrier_function_method(x1, x2, r, c, e, M, k)
 print(f"Barrier function method: {result[0]}; count of iteractions = {result[1]}")
 print('Count of compute function =', counter + 1)
-
 
 
 show(x1_list, x2_list)

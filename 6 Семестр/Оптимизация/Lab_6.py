@@ -20,10 +20,10 @@ def drawFunc(minX, minY, maxX, maxY):
     x1_array, x2_array = np.meshgrid(x1_array, x2_array)
     R = f(x1_array, x2_array)
 
-    #drawBoder(ax, x1_array, g1_1)
-    #drawBoder(ax, x1_array, g2_1)
-    #drawBoder(ax, x1_array, g3_1)
-    #drawBoder(ax, x1_array, g4_1)
+    drawBoder(ax, x1_array, g1_1)
+    drawBoder(ax, x1_array, g2_1)
+    drawBoder(ax, x1_array, g3_1)
+    drawBoder(ax, x1_array, g4_1)
     
     ax.plot_surface(x1_array, x2_array, R, color='b', alpha=0.5)
     
